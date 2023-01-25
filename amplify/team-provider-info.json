@@ -34,7 +34,8 @@
     },
     "categories": {
       "auth": {
-        "dgssitereactfd5f1cff": {}
+        "dgssitereactfd5f1cff": {},
+        "dgssitemain": {}
       },
       "hosting": {
         "amplifyhosting": {
