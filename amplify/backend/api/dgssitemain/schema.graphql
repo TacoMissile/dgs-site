@@ -1,0 +1,134 @@
+type Turn {
+  id: ID
+  characterID: ID
+  phase: Int
+  hasGone: Boolean
+}
+
+type Combat @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  pcs: String
+  CombatPCCharacters: [PCCharacter] @manyToMany(relationName: "CombatPCCharacter")
+  turns: [Turn]
+}
+
+type PCArchetype @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  tats: PrimaryStats
+  stats: StatBlock
+  slots: [SlotType]
+  pccharacterID: ID! @index(name: "byPCCharacter")
+}
+
+enum SlotType {
+  LIGHT
+  MEDIUM
+  HEAVY
+}
+
+type PrimaryStats {
+  tough: Int
+  agility: Int
+  mod: Int
+  strange: Int
+}
+
+enum AbilityType {
+  PHYSICAL
+  ESOTERIC
+}
+
+enum AbilityCategory {
+  WEAPON
+  EQUIPMENT
+  TECHNIQUE
+  SKILL
+}
+
+type PCClass @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  archetype: String
+  bonusstats: PrimaryStats
+  stat: StatBlock
+  pccharacterID: ID! @index(name: "byPCCharacter")
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  description: String
+  name: String
+  PCCharactersUser: [PCCharacter] @manyToMany(relationName: "UserPCCharacter")
+}
+
+type NPCAbility @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  uses: Int
+  description: String
+  type: String
+  npcbases: [NPCBase] @manyToMany(relationName: "NPCBaseNPCAbility")
+}
+
+type StatBlock {
+  hp: Int
+  sp: Int
+  armor: Int
+  barrier: Int
+  physicaldefense: Int
+  esotericdefense: Int
+  speed: Int
+  strain: Int
+}
+
+type PCAbility @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  typeCategory: AbilityCategory
+  typeAbility: AbilityType
+  slot: SlotType
+  uses: Int
+  gp: Int
+  rank: Int
+  pccharacterID: ID! @index(name: "byPCCharacter")
+}
+
+type PCCharacter @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  description: String
+  level: Int
+  user: ID
+  statBase: StatBlock
+  statCurrent: StatBlock
+  statPrimaryBase: PrimaryStats
+  statPrimaryCurrent: PrimaryStats
+  PCAbilities: [PCAbility] @hasMany(indexName: "byPCCharacter", fields: ["id"])
+  PCClasses: [PCClass] @hasMany(indexName: "byPCCharacter", fields: ["id"])
+  PCClassesKnown: [PCClass] @hasMany(indexName: "byPCCharacter", fields: ["id"])
+  PCArchetypesKnown: [PCArchetype] @hasMany(indexName: "byPCCharacter", fields: ["id"])
+  PCArchetypes: [PCArchetype] @hasMany(indexName: "byPCCharacter", fields: ["id"])
+  gearPoints: Int
+  gearPointsMax: Int
+  users: [User] @manyToMany(relationName: "UserPCCharacter")
+  combats: [Combat] @manyToMany(relationName: "CombatPCCharacter")
+}
+
+type NPCBase @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  description: String
+  tier: Int
+  statBasePrimary: PrimaryStats
+  statBlockBase: StatBlock
+  statBlockTierBonus: StatBlock
+  physicalSaveBase: Int
+  physicalSaveTierBonus: Int
+  esotericSaveBase: Int
+  esotericSaveTierBonus: Int
+  damageTierBonus: Int
+  NPCAbilitiesNPCBase: [NPCAbility] @manyToMany(relationName: "NPCBaseNPCAbility")
+}
+ 

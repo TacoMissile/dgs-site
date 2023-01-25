@@ -1,0 +1,14 @@
+{
+  "resourceName": "s3dgssitemainstorage87ea6654",
+  "bucketName": "dgs-site-main-storage-87ea6654",
+  "policyUUID": "789ea12e",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "READ",
+    "DELETE",
+    "CREATE_AND_UPDATE"
+  ]
+}
